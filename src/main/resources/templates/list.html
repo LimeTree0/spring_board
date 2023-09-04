@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>list</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+<h1>스프링 부트 게시판</h1>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <a href="/posts/save" role="button" class="btn btn-primary">글 등록</a>
+        </div>
+    </div>
+    <br>
+    <!--목록 출력 영역-->
+    <table class="table table-horizontal table-bordered">
+        <thead class="thead-strong">
+        <tr>
+            <th>아이디</th>
+            <th>제목</th>
+            <th>저자</th>
+            <th>작성 날짜</th>
+            <th>조회수</th>
+        </tr>
+        </thead>
+        <tbody id="tbody">
+            <tr th:each="post: ${responseDto}">
+                <td th:text="${post.id}"></td>
+                <td><a th:href="@{|/posts/update/${post.id}|(page=${responseDto.number + 1})}" th:text="${post.title}"></a></td>
+                <td th:text="${post.author}"></td>
+                <td th:text="*{#temporals.format(post.createdTime, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                <td th:text="${post.hits}"></td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- 첫번째 페이지로 이동 -->
+    <!-- /post/paging?page=1 -->
+    <a th:href="@{/posts/(page=1)}">First</a>
+    <!-- 이전 링크 활성화 비활성화 -->
+    <!-- responseDto.getNumber() 사용자:2페이지 getNumber()=1 -->
+    <a th:href="${responseDto.first} ? '#' : @{/posts/(page=${responseDto.number})}">prev</a>
+
+    <!-- 페이지 번호 링크(현재 페이지는 숫자만)
+            for(int page=startPage; page<=endPage; page++)-->
+    <span th:each="page: ${#numbers.sequence(startPage, endPage)}">
+<!-- 현재페이지는 링크 없이 숫자만 -->
+    <span th:if="${page == responseDto.number + 1}" th:text="${page}"></span>
+        <!-- 현재페이지 번호가 아닌 다른 페이지번호에는 링크를 보여줌 -->
+    <span th:unless="${page == responseDto.number + 1}">
+        <a th:href="@{/posts/(page=${page})}" th:text="${page}"></a>
+    </span>
+</span>
+
+    <!-- 다음 링크 활성화 비활성화
+        사용자: 2페이지, getNumber: 1, 3페이지-->
+    <a th:href="${responseDto.last} ? '#' : @{/posts/(page=${responseDto.number + 2})}">next</a>
+    <!-- 마지막 페이지로 이동 -->
+    <a th:href="@{/posts/(page=${responseDto.totalPages})}">Last</a>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/save.js"></script>
+</body>
+</html>

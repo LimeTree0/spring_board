@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>save</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<h1>게시글 수정</h1>
+<div class="col-md-12">
+    <input hidden="hidden" id="page" th:value="${page}">
+    <div class="col-md-4">
+        <form>
+            <input hidden="hidden" id="id" th:value="${responseDto.id}">
+            <div class="form-group">
+                <label for="title">제목</label>
+                <input type="text" class="form-control" id="title" th:value="${responseDto.title}">
+            </div>
+            <div class="form-group">
+                <label for="author">작성자</label>
+                <input type="text" class="form-control" id="author" th:value="${responseDto.author}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="contents">내용</label>
+                <textarea class="form-control" id="contents" th:text="${responseDto.contents}"></textarea>
+            </div>
+        </form>
+        <button type="button" class="btn btn-primary" onclick="deletePost()">삭제</button>
+        <button type="button" class="btn btn-primary" onclick="updatePost()">수정</button>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/update.js"></script>
+<script src="/delete.js"></script>
+</body>
+</html>
