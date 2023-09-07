@@ -1,5 +1,7 @@
 package com.limecoding.limecoding.Controller;
 
+import com.limecoding.limecoding.config.auth.LoginUser;
+import com.limecoding.limecoding.config.auth.dto.SessionUser;
 import com.limecoding.limecoding.dto.PostListResponseDto;
 import com.limecoding.limecoding.dto.PostResponseDto;
 import com.limecoding.limecoding.dto.PostSaveResponseDto;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -24,15 +27,17 @@ public class PostController {
 
     // 게시글 목록 보여주기
     @GetMapping("/")
-    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model) {
+    public String paging(@PageableDefault(page = 1) Pageable pageable, Model model, @LoginUser SessionUser user) {
         Page<PostListResponseDto> listResponseDtos = postService.paging(pageable);
 
         int blockLimit = 3;
         int startPage = (((int)(Math.ceil((double)pageable.getPageNumber() / blockLimit))) - 1) * blockLimit + 1; // 1 4 7 10 ~~
         int endPage = ((startPage + blockLimit - 1) < listResponseDtos.getTotalPages()) ? startPage + blockLimit - 1 : listResponseDtos.getTotalPages();
+
         model.addAttribute("responseDto", listResponseDtos);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
+        if(user != null) model.addAttribute("userName", user.getName());
 
         return "list";
     }
